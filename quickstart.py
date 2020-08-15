@@ -66,6 +66,5 @@ def main():
     df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
 
 
-
 if __name__ == '__main__':
     main()
