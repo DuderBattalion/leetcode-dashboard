@@ -1,6 +1,7 @@
 from __future__ import print_function
 import pickle
 import os.path
+import pandas as pd
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -47,16 +48,23 @@ def main():
                                 range=SAMPLE_RANGE_NAME).execute()
     values = result.get('values', [])
 
-    if not values:
-        print('No data found.')
-    else:
-        print('Name, Major:')
-        for row in values:
-            # # Print columns A and E, which correspond to indices 0 and 4.
-            # print('%s, %s' % (row[0], row[4]))
+    # if not values:
+    #     print('No data found.')
+    # else:
+    #     print('Name, Major:')
+    #     for row in values:
+    #         # # Print columns A and E, which correspond to indices 0 and 4.
+    #         # print('%s, %s' % (row[0], row[4]))
+    #
+    #         # Print columns A and B
+    #         print('%s, %s' % (row[0], row[1]))
 
-            # Print columns A and B
-            print('%s, %s' % (row[0], row[1]))
+    if not values:
+        print('No data found. Exiting.')
+        return
+
+    df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
+
 
 
 if __name__ == '__main__':
