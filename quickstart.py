@@ -2,6 +2,7 @@ from __future__ import print_function
 import pickle
 import os.path
 import pandas as pd
+import plotly.express as px
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -64,6 +65,13 @@ def main():
         return
 
     df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
+    df['CompletionDate'] = pd.to_datetime(df['CompletionDate'])
+    df['ProblemsSolved'] = pd.to_numeric(df['ProblemsSolved'])
+
+    print(df.dtypes)
+
+    fig = px.line(df, x='CompletionDate', y='ProblemsSolved')
+    fig.show()
 
 
 if __name__ == '__main__':
