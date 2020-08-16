@@ -64,11 +64,27 @@ def main():
         print('No data found. Exiting.')
         return
 
-    df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
+    # df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
+    # df['CompletionDate'] = pd.to_datetime(df['CompletionDate'])
+    # df['ProblemsSolved'] = pd.to_numeric(df['ProblemsSolved'])
+    #
+    # print(df.dtypes)
+    #
+    # fig = px.line(df, x='CompletionDate', y='ProblemsSolved')
+    # fig.show()
+
+    problems_solved_cache = {}
+    for row in values[1:]:
+        completion_date = row[1]
+        problems_solved = row[2]
+
+        problems_solved_cache[completion_date] = problems_solved
+
+    df = pd.DataFrame(problems_solved_cache.items(), columns=['CompletionDate', 'ProblemsSolved'])
     df['CompletionDate'] = pd.to_datetime(df['CompletionDate'])
     df['ProblemsSolved'] = pd.to_numeric(df['ProblemsSolved'])
 
-    print(df.dtypes)
+    print(df)
 
     fig = px.line(df, x='CompletionDate', y='ProblemsSolved')
     fig.show()
