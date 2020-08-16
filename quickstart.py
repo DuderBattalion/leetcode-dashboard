@@ -64,30 +64,46 @@ def main():
         print('No data found. Exiting.')
         return
 
-    # df = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
-    # df['CompletionDate'] = pd.to_datetime(df['CompletionDate'])
-    # df['ProblemsSolved'] = pd.to_numeric(df['ProblemsSolved'])
+    # completion_vs_solved = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
+    # completion_vs_solved['CompletionDate'] = pd.to_datetime(completion_vs_solved['CompletionDate'])
+    # completion_vs_solved['ProblemsSolved'] = pd.to_numeric(completion_vs_solved['ProblemsSolved'])
     #
-    # print(df.dtypes)
+    # print(completion_vs_solved.dtypes)
     #
-    # fig = px.line(df, x='CompletionDate', y='ProblemsSolved')
+    # fig = px.line(completion_vs_solved, x='CompletionDate', y='ProblemsSolved')
     # fig.show()
 
-    problems_solved_cache = {}
+    # Total Number of problems solved tagged by date
+    solved_progress_cache = {}
+
+    # Problems solved per day
+    problems_per_day_cache = {}
+
     for row in values[1:]:
         completion_date = row[1]
         problems_solved = row[2]
 
-        problems_solved_cache[completion_date] = problems_solved
+        solved_progress_cache[completion_date] = problems_solved
 
-    df = pd.DataFrame(problems_solved_cache.items(), columns=['CompletionDate', 'ProblemsSolved'])
-    df['CompletionDate'] = pd.to_datetime(df['CompletionDate'])
-    df['ProblemsSolved'] = pd.to_numeric(df['ProblemsSolved'])
+    prev_day_probs = 0
+    for key, val in solved_progress_cache.items():
+        int_val = int(val)
+        problems_per_day_cache[key] = int_val - prev_day_probs
+        prev_day_probs = int_val
 
-    print(df)
+    completion_vs_solved = pd.DataFrame(solved_progress_cache.items(), columns=['CompletionDate', 'ProblemsSolved'])
+    completion_vs_solved['CompletionDate'] = pd.to_datetime(completion_vs_solved['CompletionDate'])
+    completion_vs_solved['ProblemsSolved'] = pd.to_numeric(completion_vs_solved['ProblemsSolved'])
 
-    fig = px.line(df, x='CompletionDate', y='ProblemsSolved')
+    fig = px.line(completion_vs_solved, x='CompletionDate', y='ProblemsSolved')
     fig.show()
+
+    problems_per_day = pd.DataFrame(problems_per_day_cache.items(), columns=['CompletionDate', 'ProblemsPerDay'])
+    problems_per_day['CompletionDate'] = pd.to_datetime(problems_per_day['CompletionDate'])
+    problems_per_day['ProblemsPerDay'] = pd.to_numeric(problems_per_day['ProblemsPerDay'])
+
+    problems_per_day_graph = px.bar(problems_per_day, x='CompletionDate', y='ProblemsPerDay')
+    problems_per_day_graph.show()
 
 
 if __name__ == '__main__':
