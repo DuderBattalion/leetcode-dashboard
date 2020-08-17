@@ -30,10 +30,10 @@ def main():
 
     num_all_problems = 1500
     total_problems_solved = int(values[-1][2])
-    num_days_passed = len(values) - 1  # Exclude first title row
-    start_date = pd.to_datetime(values[1][1])
     problems_left = num_all_problems - total_problems_solved
+    start_date = pd.to_datetime(values[1][1])
     today_date = pd.to_datetime('now')
+    num_days_passed = (today_date - start_date).days
 
     print_expected_completion_date(num_all_problems, num_days_passed, start_date, total_problems_solved)
     print_desired_completion_date(problems_left, today_date)
