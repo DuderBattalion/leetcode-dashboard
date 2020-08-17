@@ -120,7 +120,9 @@ def main():
 
     print(f'Average problems per day: {avg_problems_solved_per_day}')
     print(f'Expected completion date: {expected_completion_date_all_problems}')
+    print()
 
+    # Desired completion date
     problems_left = num_all_problems - total_problems_solved
     desired_completion_date = pd.to_datetime('2020-11-30')
     today_date = pd.to_datetime('now')
@@ -130,6 +132,15 @@ def main():
 
     print(f'Desired completion date: {desired_completion_date}')
     print(f'Numbers of problems per day requird: {desired_problems_per_day}')
+    print()
+
+    # Forecasted completion date
+    estimated_problems_per_day = 10
+    forecasted_days_required = problems_left / estimated_problems_per_day
+    forecasted_completion_date = today_date + timedelta(days=forecasted_days_required)
+
+    print(f'Estimated number of problems solved per day: {estimated_problems_per_day}')
+    print(f'Forecasted completion date: {forecasted_completion_date}')
 
 
 if __name__ == '__main__':
