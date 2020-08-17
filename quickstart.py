@@ -24,16 +24,18 @@ def main():
     solved_progress_cache = init_solved_progress_cache(values)
     problems_per_day_cache = init_problems_per_day_cache(solved_progress_cache)
 
-    # Display graphs
-    show_trend_line(solved_progress_cache)
-    show_problems_per_day(problems_per_day_cache)
-
+    # Data initialization
     num_all_problems = 1500
     total_problems_solved = int(values[-1][2])
     problems_left = num_all_problems - total_problems_solved
+
     start_date = pd.to_datetime(values[1][1])
     today_date = pd.to_datetime('now')
     num_days_passed = (today_date - start_date).days
+
+    # Display graphs
+    show_trend_line(solved_progress_cache)
+    show_problems_per_day(problems_per_day_cache)
 
     # Print estimates
     print_expected_completion_date(num_all_problems, num_days_passed, start_date, total_problems_solved)
@@ -133,7 +135,7 @@ def print_expected_completion_date(num_all_problems, num_days_passed, start_date
 
 def print_desired_completion_date(problems_left, today_date):
     """Given a desired completion date, this function prints the number of problems
-    that would need to be solved per day solve all problems by the desired date.
+    that would need to be solved per day to complete all problems by the desired date.
     """
     desired_completion_date = pd.to_datetime('2020-11-30')
     days_left = desired_completion_date - today_date
