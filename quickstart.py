@@ -51,29 +51,9 @@ def main():
                                 range=SAMPLE_RANGE_NAME).execute()
     values = result.get('values', [])
 
-    # if not values:
-    #     print('No data found.')
-    # else:
-    #     print('Name, Major:')
-    #     for row in values:
-    #         # # Print columns A and E, which correspond to indices 0 and 4.
-    #         # print('%s, %s' % (row[0], row[4]))
-    #
-    #         # Print columns A and B
-    #         print('%s, %s' % (row[0], row[1]))
-
     if not values:
         print('No data found. Exiting.')
         return
-
-    # completion_vs_solved = pd.DataFrame(data=values[1:], columns=['Question', 'CompletionDate', 'ProblemsSolved'])
-    # completion_vs_solved['CompletionDate'] = pd.to_datetime(completion_vs_solved['CompletionDate'])
-    # completion_vs_solved['ProblemsSolved'] = pd.to_numeric(completion_vs_solved['ProblemsSolved'])
-    #
-    # print(completion_vs_solved.dtypes)
-    #
-    # fig = px.line(completion_vs_solved, x='CompletionDate', y='ProblemsSolved')
-    # fig.show()
 
     # Total Number of problems solved tagged by date
     solved_progress_cache = {}
