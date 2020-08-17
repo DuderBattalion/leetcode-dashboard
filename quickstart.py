@@ -72,6 +72,8 @@ def get_values_from_google():
 
 
 def init_solved_progress_cache(values):
+    """Cache stores the data required to plot progress trend line.
+    """
     solved_progress_cache = {}
     for row in values[1:]:
         completion_date = row[1]
@@ -83,6 +85,8 @@ def init_solved_progress_cache(values):
 
 
 def init_problems_per_day_cache(solved_progress_cache):
+    """Cache stores data required to plot histogram of problems
+    solved per day."""
     problems_per_day_cache = {}
 
     prev_day_problems = 0
@@ -147,6 +151,7 @@ def print_forecast_completion_date(problems_left, today_date):
     forecasted_completion_date = today_date + timedelta(days=forecasted_days_required)
     print(f'Estimated number of problems solved per day: {estimated_problems_per_day}')
     print(f'Forecasted completion date: {forecasted_completion_date}')
+    print()
 
 
 if __name__ == '__main__':
