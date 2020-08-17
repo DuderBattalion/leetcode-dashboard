@@ -41,8 +41,8 @@ def main():
 
 
 def get_values_from_google():
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
+    """Credential workflow taken from Google Sheets api docs.
+    Signs in and retrieves values from spreadsheet id provided.
     """
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
