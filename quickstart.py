@@ -121,6 +121,16 @@ def main():
     print(f'Average problems per day: {avg_problems_solved_per_day}')
     print(f'Expected completion date: {expected_completion_date_all_problems}')
 
+    problems_left = num_all_problems - total_problems_solved
+    desired_completion_date = pd.to_datetime('2020-11-30')
+    today_date = pd.to_datetime('now')
+    days_left = desired_completion_date - today_date
+
+    desired_problems_per_day = problems_left / days_left.days
+
+    print(f'Desired completion date: {desired_completion_date}')
+    print(f'Numbers of problems per day requird: {desired_problems_per_day}')
+
 
 if __name__ == '__main__':
     main()
