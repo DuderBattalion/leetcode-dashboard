@@ -67,11 +67,11 @@ def main():
 
         solved_progress_cache[completion_date] = problems_solved
 
-    prev_day_probs = 0
+    prev_day_problems = 0
     for key, val in solved_progress_cache.items():
         int_val = int(val)
-        problems_per_day_cache[key] = int_val - prev_day_probs
-        prev_day_probs = int_val
+        problems_per_day_cache[key] = int_val - prev_day_problems
+        prev_day_problems = int_val
 
     # Display graphs
     show_trend_line(solved_progress_cache)
