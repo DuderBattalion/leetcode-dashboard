@@ -35,6 +35,7 @@ def main():
     today_date = pd.to_datetime('now')
     num_days_passed = (today_date - start_date).days
 
+    # Print estimates
     print_expected_completion_date(num_all_problems, num_days_passed, start_date, total_problems_solved)
     print_desired_completion_date(problems_left, today_date)
     print_forecast_completion_date(problems_left, today_date)
