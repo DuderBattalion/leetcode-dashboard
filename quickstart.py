@@ -21,29 +21,13 @@ def main():
         print('No data found. Exiting.')
         return
 
-    # Total Number of problems solved tagged by date
-    solved_progress_cache = {}
-
-    # Problems solved per day
-    problems_per_day_cache = {}
-
-    for row in values[1:]:
-        completion_date = row[1]
-        problems_solved = row[2]
-
-        solved_progress_cache[completion_date] = problems_solved
-
-    prev_day_problems = 0
-    for key, val in solved_progress_cache.items():
-        int_val = int(val)
-        problems_per_day_cache[key] = int_val - prev_day_problems
-        prev_day_problems = int_val
+    solved_progress_cache = init_solved_progress_cache(values)
+    problems_per_day_cache = init_problems_per_day_cache(solved_progress_cache)
 
     # Display graphs
     show_trend_line(solved_progress_cache)
     show_problems_per_day(problems_per_day_cache)
 
-    # Calculate estimates and forecasts
     num_all_problems = 1500
     total_problems_solved = int(values[-1][2])
     num_days_passed = len(values) - 1  # Exclude first title row
@@ -87,27 +71,53 @@ def get_values_from_google():
     return values
 
 
-def print_forecast_completion_date(problems_left, today_date):
-    # Forecasted completion date
-    estimated_problems_per_day = 10
-    forecasted_days_required = problems_left / estimated_problems_per_day
-    forecasted_completion_date = today_date + timedelta(days=forecasted_days_required)
-    print(f'Estimated number of problems solved per day: {estimated_problems_per_day}')
-    print(f'Forecasted completion date: {forecasted_completion_date}')
+def init_solved_progress_cache(values):
+    solved_progress_cache = {}
+    for row in values[1:]:
+        completion_date = row[1]
+        problems_solved = row[2]
+
+        solved_progress_cache[completion_date] = problems_solved
+
+    return solved_progress_cache
 
 
-def print_desired_completion_date(problems_left, today_date):
-    # Desired completion date
-    desired_completion_date = pd.to_datetime('2020-11-30')
-    days_left = desired_completion_date - today_date
-    desired_problems_per_day = problems_left / days_left.days
-    print(f'Desired completion date: {desired_completion_date}')
-    print(f'Numbers of problems per day requird: {desired_problems_per_day}')
-    print()
+def init_problems_per_day_cache(solved_progress_cache):
+    problems_per_day_cache = {}
+
+    prev_day_problems = 0
+    for key, val in solved_progress_cache.items():
+        int_val = int(val)
+        problems_per_day_cache[key] = int_val - prev_day_problems
+        prev_day_problems = int_val
+
+    return problems_per_day_cache
+
+
+def show_trend_line(solved_progress_cache):
+    """Shows a trend line for progress along total problems solved. Useful for visualizing
+    rate of progress.
+    """
+    completion_vs_solved = pd.DataFrame(solved_progress_cache.items(), columns=['CompletionDate', 'ProblemsSolved'])
+    completion_vs_solved['CompletionDate'] = pd.to_datetime(completion_vs_solved['CompletionDate'])
+    completion_vs_solved['ProblemsSolved'] = pd.to_numeric(completion_vs_solved['ProblemsSolved'])
+    fig = px.line(completion_vs_solved, x='CompletionDate', y='ProblemsSolved')
+    fig.show()
+
+
+def show_problems_per_day(problems_per_day_cache):
+    """Plots a histogram that shows number of problems solved per day.
+    """
+    problems_per_day = pd.DataFrame(problems_per_day_cache.items(), columns=['CompletionDate', 'ProblemsPerDay'])
+    problems_per_day['CompletionDate'] = pd.to_datetime(problems_per_day['CompletionDate'])
+    problems_per_day['ProblemsPerDay'] = pd.to_numeric(problems_per_day['ProblemsPerDay'])
+    problems_per_day_graph = px.bar(problems_per_day, x='CompletionDate', y='ProblemsPerDay')
+    problems_per_day_graph.show()
 
 
 def print_expected_completion_date(num_all_problems, num_days_passed, start_date, total_problems_solved):
-    # Expected date of completion
+    """Calculates the current progress trend and forecasts expected date all problems will be solved.
+    """
     avg_problems_solved_per_day = total_problems_solved / num_days_passed
     num_days_all_problems = num_all_problems / avg_problems_solved_per_day
     expected_completion_date_all_problems = start_date + timedelta(days=num_days_all_problems)
@@ -116,22 +126,27 @@ def print_expected_completion_date(num_all_problems, num_days_passed, start_date
     print()
 
 
-def show_problems_per_day(problems_per_day_cache):
-    # Problems solved per day
-    problems_per_day = pd.DataFrame(problems_per_day_cache.items(), columns=['CompletionDate', 'ProblemsPerDay'])
-    problems_per_day['CompletionDate'] = pd.to_datetime(problems_per_day['CompletionDate'])
-    problems_per_day['ProblemsPerDay'] = pd.to_numeric(problems_per_day['ProblemsPerDay'])
-    problems_per_day_graph = px.bar(problems_per_day, x='CompletionDate', y='ProblemsPerDay')
-    problems_per_day_graph.show()
+def print_desired_completion_date(problems_left, today_date):
+    """Given a desired completion date, this function prints the number of problems
+    that would need to be solved per day solve all problems by the desired date.
+    """
+    desired_completion_date = pd.to_datetime('2020-11-30')
+    days_left = desired_completion_date - today_date
+    desired_problems_per_day = problems_left / days_left.days
+    print(f'Desired completion date: {desired_completion_date}')
+    print(f'Numbers of problems per day requird: {desired_problems_per_day}')
+    print()
 
 
-def show_trend_line(solved_progress_cache):
-    # Progress Trend Line
-    completion_vs_solved = pd.DataFrame(solved_progress_cache.items(), columns=['CompletionDate', 'ProblemsSolved'])
-    completion_vs_solved['CompletionDate'] = pd.to_datetime(completion_vs_solved['CompletionDate'])
-    completion_vs_solved['ProblemsSolved'] = pd.to_numeric(completion_vs_solved['ProblemsSolved'])
-    fig = px.line(completion_vs_solved, x='CompletionDate', y='ProblemsSolved')
-    fig.show()
+def print_forecast_completion_date(problems_left, today_date):
+    """Given an estimate of number of problems expected to be solved in a day,
+    this function prints the expected completion date when all problems will be solved.
+    """
+    estimated_problems_per_day = 10
+    forecasted_days_required = problems_left / estimated_problems_per_day
+    forecasted_completion_date = today_date + timedelta(days=forecasted_days_required)
+    print(f'Estimated number of problems solved per day: {estimated_problems_per_day}')
+    print(f'Forecasted completion date: {forecasted_completion_date}')
 
 
 if __name__ == '__main__':
